@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue寻宝游戏</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- 导航栏组件 -->
+        <nav-bar 
+            :current-page="currentPage"
+            :music-playing="musicPlaying"
+            :volume="volume"
+            @navigate="changePage"
+            @toggle-music="toggleMusic"
+            @adjust-volume="adjustVolume"
+        ></nav-bar>
+
+        <div class="app-container">
+            <!-- 主页组件 -->
+            <home-page 
+                v-if="currentPage === 'home'"
+                :game-data="gameData"
+                @start-location="startLocation"
+            ></home-page>
+
+            <!-- 游戏页面组件 -->
+            <game-page 
+                v-else-if="currentPage.startsWith('game-')"
+                :location="currentPage.replace('game-', '')"
+                :game-data="gameData"
+                @update-progress="updateGameProgress"
+                @back-to-home="changePage('home')"
+            ></game-page>
+
+            <!-- 用户管理页面 -->
+            <user-management 
+                v-else-if="currentPage === 'users'"
+                :users="users"
+                :current-user="currentUser"
+                @login="loginUser"
+                @register="registerUser"
+                @logout="logoutUser"
+            ></user-management>
+
+            <!-- 排行榜页面 -->
+            <leaderboard 
+                v-else-if="currentPage === 'leaderboard'"
+                :users="users"
+                :current-user="currentUser"
+            ></leaderboard>
+        </div>
+    </div>
+
+    <script src="core-services.js"></script>
+    <script src="vue-components.js"></script>
+    <script src="app-entry.js"></script>
+</body>
+</html>
